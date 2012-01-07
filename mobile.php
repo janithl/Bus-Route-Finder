@@ -1,8 +1,11 @@
 <?php
 
+require('./dbconn.php');
+
 /******************************************************************************************
 
 	Colombo Bus Route Finder by Janith Leanage (http://janithl.blogspot.com).
+	and Thimal Jayasooriya (https://github.com/thimal)
 
 	Project started: 27/Jun/11	Code rewritten from scratch: 08/Jul/11
 
@@ -34,22 +37,16 @@ echo <<< OUT
 <form action="query.php" method="get" enctype="text/plain" autocomplete="off">
 OUT;
 
-$link = mysql_connect ("localhost", "root", "");
-mysql_select_db ("bus", $link);
-
-$sql_query = <<<SQL
-SELECT p.pid, p.name
-FROM place AS p
-ORDER BY p.name ASC;
-SQL;
+$dbconn	= new DBConn();
+$res	= $dbconn->query("SELECT pid, name FROM place ORDER BY p.name ASC", array());
 
 $options = '';
 
-if(($locs = mysql_query ($sql_query, $link)) != false && (mysql_num_rows($locs)) > 0)
+if($res)
 {
-	while($array = mysql_fetch_array($locs))
+	while(($row = $resultset->fetch()) != false)
 	{
-		$options .= '<option value="'.$array[0].'">'.$array[1].'</option>'."\n";
+		$options .= '<option value="'.$row[0].'">'.$row[1].'</option>'."\n";
 	}
 }
 
